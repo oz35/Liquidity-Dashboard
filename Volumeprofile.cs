@@ -294,7 +294,7 @@ namespace cAlgo.Indicators
         private void DrawProfile(int index)
         {
             // Remove all previous objects belonging to this indicator
-            var toRemove = Chart.FindAllObjects()
+            var toRemove = Chart.FindAllObjects<ChartObject>()
                 .Where(o => o.Name.StartsWith(Prefix))
                 .ToList();
             foreach (var obj in toRemove)
