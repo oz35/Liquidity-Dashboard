@@ -5,6 +5,11 @@ from plotly.subplots import make_subplots
 from fredapi import Fred
 import yfinance as yf
 
+@st.cache_data
+def get_fred_series(api_key, series_id):
+    fred = Fred(api_key=api_key)
+    return fred.get_series(series_id)
+
 # Set up the web page title
 st.set_page_config(page_title="Global Liquidity Macro Dashboard", layout="centered")
 st.title("Net Dollar Liquidity vs. Global Assets")
@@ -28,14 +33,11 @@ selected_ticker = assets[selected_asset_name]
 
 if api_key:
     try:
-        # Connect to the Fed
-        fred = Fred(api_key=api_key)
-        
         with st.spinner(f"Fetching data for Liquidity and {selected_asset_name}..."):
             # Pull the three specific datasets
-            walcl = fred.get_series('WALCL')       
-            wtregen = fred.get_series('WTREGEN')   
-            rrp = fred.get_series('RRPONTSYD')     
+            walcl = get_fred_series(api_key, 'WALCL')
+            wtregen = get_fred_series(api_key, 'WTREGEN')
+            rrp = get_fred_series(api_key, 'RRPONTSYD')
 
             # Combine them into a single table
             df = pd.DataFrame({'WALCL': walcl, 'WTREGEN': wtregen, 'RRP': rrp})
