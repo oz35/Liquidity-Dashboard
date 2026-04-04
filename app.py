@@ -1,9 +1,14 @@
 import streamlit as st
+import logging
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from fredapi import Fred
 import yfinance as yf
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Set up the web page title
 st.set_page_config(page_title="Global Liquidity Macro Dashboard", layout="centered")
@@ -85,5 +90,6 @@ if api_key:
             
             st.success("Chart updated successfully!")
 
-    except Exception as e:
-        st.error(f"Oops! Something went wrong: {e}. Double check your API key.")
+    except Exception:
+        logger.exception("An error occurred during net liquidity calculation")
+        st.error("Oops! Something went wrong. Please double-check your API key and try again later.")
