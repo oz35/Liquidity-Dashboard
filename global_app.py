@@ -5,6 +5,11 @@ from plotly.subplots import make_subplots
 from fredapi import Fred
 import yfinance as yf
 
+# Cache the yfinance data download to improve app responsiveness
+@st.cache_data
+def load_asset_data(ticker, start, end):
+    return yf.download(ticker, start=start, end=end)
+
 # Set up the web page title
 st.set_page_config(page_title="G3 Global Liquidity Dashboard", layout="centered")
 st.title("G3 Global Liquidity vs. Assets")
@@ -68,12 +73,13 @@ if api_key:
             df['G3_Global_Liquidity'] = df['Fed_Trillions'] + df['ECB_USD_Trillions'] + df['BOJ_USD_Trillions']
 
             # Filter to show just the last 5 years
-            df = df.last('5Y')
+            # Replacing deprecated df.last('5Y') with .loc and pd.DateOffset
+            df = df.loc[df.index >= (df.index.max() - pd.DateOffset(years=5))]
 
             # Fetch Asset Data to match our dates
             start_date = df.index.min().strftime('%Y-%m-%d')
             end_date = df.index.max().strftime('%Y-%m-%d')
-            asset_data = yf.download(selected_ticker, start=start_date, end=end_date)
+            asset_data = load_asset_data(selected_ticker, start=start_date, end=end_date)
             
             # Create a dual-axis chart
             fig = make_subplots(specs=[[{"secondary_y": True}]])
