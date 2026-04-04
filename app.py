@@ -1,4 +1,5 @@
 import streamlit as st
+import re
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -27,6 +28,12 @@ selected_asset_name = st.selectbox("Select an asset to compare against Liquidity
 selected_ticker = assets[selected_asset_name]
 
 if api_key:
+    # Basic validation: FRED API keys are 32-character alphanumeric strings
+    api_key = api_key.strip()
+    if not re.fullmatch(r'[a-z0-9]{32}', api_key.lower()):
+        st.error("Invalid FRED API Key format. It should be a 32-character alphanumeric string.")
+        st.stop()
+
     try:
         # Connect to the Fed
         fred = Fred(api_key=api_key)
