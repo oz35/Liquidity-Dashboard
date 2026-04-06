@@ -47,7 +47,7 @@ if api_key:
             df['Net_Liquidity_Trillions'] = df['Net_Liquidity_Millions'] / 1000000
 
             # Filter to show just the last 5 years
-            df = df.last('5Y')
+            df = df[df.index >= (df.index.max() - pd.DateOffset(years=5))]
 
             # Fetch Asset Data to match our dates
             start_date = df.index.min().strftime('%Y-%m-%d')
