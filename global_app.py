@@ -68,7 +68,7 @@ if api_key:
             df['G3_Global_Liquidity'] = df['Fed_Trillions'] + df['ECB_USD_Trillions'] + df['BOJ_USD_Trillions']
 
             # Filter to show just the last 5 years
-            df = df[df.index >= (df.index.max() - pd.DateOffset(years=5))]
+        
 
             # Fetch Asset Data to match our dates
             start_date = df.index.min().strftime('%Y-%m-%d')
