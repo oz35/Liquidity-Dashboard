@@ -1,9 +1,14 @@
 import streamlit as st
+import logging
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from fredapi import Fred
 import yfinance as yf
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Set up the web page title
 st.set_page_config(page_title="G3 Global Liquidity Dashboard", layout="centered")
@@ -104,5 +109,6 @@ if api_key:
             
             st.success("Global G3 Chart updated successfully!")
 
-    except Exception as e:
-        st.error(f"Oops! Something went wrong: {e}. Double check your API key.")
+    except Exception:
+        logger.exception("An error occurred during global liquidity calculation")
+        st.error("Oops! Something went wrong. Please double-check your API key and try again later.")
