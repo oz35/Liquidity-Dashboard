@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from fredapi import Fred
 import yfinance as yf
+from fred_utils import get_fred_series
 
 # Set up the web page title
 st.set_page_config(page_title="Global Liquidity Macro Dashboard", layout="centered")
@@ -28,14 +28,11 @@ selected_ticker = assets[selected_asset_name]
 
 if api_key:
     try:
-        # Connect to the Fed
-        fred = Fred(api_key=api_key)
-        
         with st.spinner(f"Fetching data for Liquidity and {selected_asset_name}..."):
             # Pull the three specific datasets
-            walcl = fred.get_series('WALCL')       
-            wtregen = fred.get_series('WTREGEN')   
-            rrp = fred.get_series('RRPONTSYD')     
+            walcl = get_fred_series(api_key, 'WALCL')
+            wtregen = get_fred_series(api_key, 'WTREGEN')
+            rrp = get_fred_series(api_key, 'RRPONTSYD')
 
             # Combine them into a single table
             df = pd.DataFrame({'WALCL': walcl, 'WTREGEN': wtregen, 'RRP': rrp})

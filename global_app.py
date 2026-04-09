@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from fredapi import Fred
 import yfinance as yf
+from fred_utils import get_fred_series
 
 # Set up the web page title
 st.set_page_config(page_title="G3 Global Liquidity Dashboard", layout="centered")
@@ -27,21 +27,19 @@ selected_ticker = assets[selected_asset_name]
 
 if api_key:
     try:
-        fred = Fred(api_key=api_key)
-        
         with st.spinner("Fetching global central bank data & exchange rates..."):
             # 1. Pull US Federal Reserve Data
-            walcl = fred.get_series('WALCL')       
-            wtregen = fred.get_series('WTREGEN')   
-            rrp = fred.get_series('RRPONTSYD')     
-            
+            walcl = get_fred_series(api_key, 'WALCL')
+            wtregen = get_fred_series(api_key, 'WTREGEN')
+            rrp = get_fred_series(api_key, 'RRPONTSYD')
+
             # 2. Pull ECB and BOJ Balance Sheets
-            ecb_assets = fred.get_series('ECBASSETSW') # ECB in Millions of Euros
-            boj_assets = fred.get_series('JPNASSETS')  # BOJ in Billions of Yen
-            
+            ecb_assets = get_fred_series(api_key, 'ECBASSETSW') # ECB in Millions of Euros
+            boj_assets = get_fred_series(api_key, 'JPNASSETS')  # BOJ in Billions of Yen
+
             # 3. Pull Live Exchange Rates to convert everything to USD
-            eur_usd = fred.get_series('DEXUSEU') # 1 Euro = X USD
-            usd_jpy = fred.get_series('DEXJPUS') # 1 USD = X Yen
+            eur_usd = get_fred_series(api_key, 'DEXUSEU') # 1 Euro = X USD
+            usd_jpy = get_fred_series(api_key, 'DEXJPUS') # 1 USD = X Yen
 
             # Combine them into a single table
             df = pd.DataFrame({
