@@ -5,6 +5,8 @@ from plotly.subplots import make_subplots
 from fredapi import Fred
 import yfinance as yf
 
+from constants import ASSETS
+
 # Set up the web page title
 st.set_page_config(page_title="Global Liquidity Macro Dashboard", layout="centered")
 st.title("Net Dollar Liquidity vs. Global Assets")
@@ -13,18 +15,9 @@ st.write("Tracking 'Shadow QE' and its impact on the markets.")
 # Create a box for you to paste your API key securely
 api_key = st.text_input("Enter your FRED API Key:", type="password")
 
-# Define the assets for the drop-down menu
-assets = {
-    "Bitcoin (BTC)": "BTC-USD",
-    "S&P 500 (US500)": "^GSPC",
-    "Gold (Futures)": "GC=F",
-    "Bittensor (TAO)": "TAO-USD",
-    "Astar (ASTR)": "ASTR-USD"
-}
-
 # Create the interactive drop-down menu
-selected_asset_name = st.selectbox("Select an asset to compare against Liquidity:", list(assets.keys()))
-selected_ticker = assets[selected_asset_name]
+selected_asset_name = st.selectbox("Select an asset to compare against Liquidity:", list(ASSETS.keys()))
+selected_ticker = ASSETS[selected_asset_name]
 
 if api_key:
     try:

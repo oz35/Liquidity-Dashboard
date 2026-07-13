@@ -5,6 +5,8 @@ from plotly.subplots import make_subplots
 from fredapi import Fred
 import yfinance as yf
 
+from constants import ASSETS
+
 # Set up the web page title
 st.set_page_config(page_title="G3 Global Liquidity Dashboard", layout="centered")
 st.title("G3 Global Liquidity vs. Assets")
@@ -13,17 +15,9 @@ st.write("Tracking the combined USD value of the Fed, ECB, and BOJ.")
 # Create a box for you to paste your API key
 api_key = st.text_input("Enter your FRED API Key:", type="password")
 
-# Define the assets for the drop-down menu
-assets = {
-    "Bitcoin (BTC)": "BTC-USD",
-    "S&P 500 (US500)": "^GSPC",
-    "Bittensor (TAO)": "TAO-USD",
-    "Astar (ASTR)": "ASTR-USD"
-}
-
 # Create the interactive drop-down menu
-selected_asset_name = st.selectbox("Select an asset to compare:", list(assets.keys()))
-selected_ticker = assets[selected_asset_name]
+selected_asset_name = st.selectbox("Select an asset to compare:", list(ASSETS.keys()))
+selected_ticker = ASSETS[selected_asset_name]
 
 if api_key:
     try:
